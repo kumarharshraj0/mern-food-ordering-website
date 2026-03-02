@@ -27,7 +27,7 @@ export const UserProvider = ({ children }) => {
       const res = await api.get("/users/me");
       setUser(res.data);
     } catch (err) {
-      console.log(err);
+
     } finally {
       setLoading(false);
     }

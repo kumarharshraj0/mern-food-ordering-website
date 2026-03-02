@@ -23,7 +23,7 @@ exports.signup = async (req, res) => {
     const allowedRoles = ['user', 'deliveryBoy'];
     const assignedRoles = allowedRoles.includes(role) ? [role] : ['user'];
 
-    console.log(`[Signup] Creating user: ${email}, role: ${role}`);
+
 
     const user = new User({
       name,
@@ -33,10 +33,10 @@ exports.signup = async (req, res) => {
     });
 
     user.password = password; // Explicitly set to trigger isModified
-    console.log(`[Signup] Password set on user object. Is modified: ${user.isModified('password')}`);
+
 
     await user.save();
-    console.log(`[Signup] User saved successfully`);
+
 
     res.status(201).json({
       message: "Account created successfully. You can now login."
@@ -56,20 +56,20 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log(`[Login] Attempting login for: ${email}`);
+
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
-      console.log(`[Login] User not found: ${email}`);
+
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
-    console.log(`[Login] Password check for ${email}: ${validPassword ? 'SUCCESS' : 'FAILURE'}`);
+
 
     if (!validPassword)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    console.log('login successful for user:', user.email);
+
 
     const accessToken = jwt.sign(
       { id: user._id, roles: user.roles },
@@ -354,7 +354,7 @@ exports.googleLogin = async (req, res) => {
         password: crypto.randomBytes(16).toString("hex"), // Random password for social login
       });
       await user.save();
-      console.log(`[Google Login] Created new user: ${email}`);
+
     } else {
       // Update googleId if not present
       if (!user.googleId) {
@@ -362,7 +362,7 @@ exports.googleLogin = async (req, res) => {
         if (!user.profileImage) user.profileImage = picture;
         await user.save();
       }
-      console.log(`[Google Login] Logged in existing user: ${email}`);
+
     }
 
     const accessToken = jwt.sign(

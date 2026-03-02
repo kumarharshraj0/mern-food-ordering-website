@@ -174,13 +174,13 @@ exports.getPayoutDetails = async (req, res) => {
         if (!req.user.roles.includes("admin")) {
             const restaurant = await Restaurant.findOne({ owner: req.user._id });
             if (!restaurant) {
-                console.log(`[PAYOUT] No restaurant found for owner ${req.user._id}`);
+
                 return res.status(403).json({ message: "Forbidden: No restaurant found" });
             }
 
             const payoutRestId = payout.restaurant._id || payout.restaurant;
             if (payoutRestId.toString() !== restaurant._id.toString()) {
-                console.log(`[PAYOUT] Security mismatch! Payout Rest: ${payoutRestId}, Owner Rest: ${restaurant._id}`);
+
                 return res.status(403).json({ message: "Forbidden: Ownership mismatch" });
             }
         }
@@ -196,7 +196,6 @@ exports.getPayoutDetails = async (req, res) => {
 ====================================================== */
 exports.processWeeklyPayouts = async (req, res) => {
     try {
-        console.log("[PAYOUT] Starting Batch Weekly Settlement...");
         const restaurants = await Restaurant.find();
         let processedCount = 0;
         let totalAmount = 0;

@@ -73,7 +73,6 @@ export const OrderProvider = ({ children }) => {
     try {
       setLoading(true);
       const res = await api.get("/orders/restaurant/orders");
-      console.log("Fetched Restaurant Orders:", res.data.order);
       setOrders(res.data);
     } finally {
       setLoading(false);

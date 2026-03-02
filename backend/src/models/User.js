@@ -64,16 +64,12 @@ userSchema.index({ location: '2dsphere' });
 
 // Password hash
 userSchema.pre('save', async function (next) {
-  console.log(`[Model Pre-Save] Hook triggered for user: ${this.email}`);
   if (!this.isModified('password')) {
-    console.log(`[Model Pre-Save] Password NOT modified, skipping hash`);
     return next();
   }
 
-  console.log(`[Model Pre-Save] Hashing password for: ${this.email}`);
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
-  console.log(`[Model Pre-Save] Password hashed successfully`);
   next();
 });
 

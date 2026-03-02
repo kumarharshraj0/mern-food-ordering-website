@@ -94,32 +94,24 @@ export default function MenuPage() {
 
   /* ---------------- ADD TO CART ---------------- */
   const handleAddToCart = async (item) => {
-    console.log("Adding to cart:", item.name);
     const toastId = toast.loading("Adding to cart...");
 
     try {
       setAdding(true);
 
       const payload = {
-        menuItem: item._id,                                // ✅ REQUIRED
-        restaurant: item.restaurant?._id || item.restaurant, // ✅ REQUIRED
-
-        title: item.name,                                  // snapshot
-        image: item.images?.[0] || null,                   // snapshot
+        menuItem: item._id,
+        restaurant: item.restaurant?._id || item.restaurant,
+        title: item.name,
+        image: item.images?.[0] || null,
         basePrice: item.price,
-
         quantity: 1,
-
-        // OPTIONAL (for future use)
         size: null,
         addons: [],
-
         totalPrice: item.price * 1
       };
 
-      console.log("Payload:", payload);
       await addToCart(payload);
-      console.log("Success!");
 
       toast.success("Item added to cart! 🍔", {
         id: toastId,

@@ -19,7 +19,7 @@ export const MenuProvider = ({ children }) => {
     setLoading(true);
     const res = await api.get("/menu", { params });
     setMenu(res.data.items);
-    console.log('menu items:', res.data.items);
+
     setPagination(res.data.pagination);
     setLoading(false);
   }, []);

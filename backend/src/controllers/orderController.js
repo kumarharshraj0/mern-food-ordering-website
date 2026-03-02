@@ -30,7 +30,6 @@ exports.createOrder = async (req, res) => {
       couponCode // ✅ Accept coupon code
     } = req.body;
 
-    console.log("CREATE ORDER PAYLOAD:", req.body);
 
     if (!items || items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
@@ -255,7 +254,6 @@ exports.listMyRestaurantOrders = async (req, res) => {
       .populate("items.menuItem", "images"); // Populate for image fallback
 
     res.status(200).json(orders);
-    console.log("my resturant Orders:", orders);
   } catch (err) {
     console.error("LIST MY RESTAURANT ORDERS ERROR:", err);
     res.status(500).json({ message: "Server error" });
@@ -304,7 +302,8 @@ exports.updateOrderStatus = async (req, res) => {
             subject: mail.subject,
             html: mail.html
           });
-          console.log(`OTP Email sent to ${orderWithUser.user.email}`);
+          // Email logic here
+
         }
       } catch (emailErr) {
         console.error("FAILED TO SEND OTP EMAIL:", emailErr);

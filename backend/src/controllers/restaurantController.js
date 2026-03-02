@@ -44,7 +44,7 @@ exports.create = async (req, res) => {
     if (user && !user.roles.includes("owner")) {
       user.roles.push("owner");
       await user.save();
-      console.log(`[Create Restaurant] User ${user.email} promoted to owner.`);
+
     }
 
     // Upload images if provided
@@ -282,7 +282,7 @@ exports.approveRestaurant = async (req, res) => {
       if (ownerUser && !ownerUser.roles.includes("owner")) {
         ownerUser.roles.push("owner");
         await ownerUser.save();
-        console.log(`User ${ownerUser.email} promoted to owner role.`);
+
       }
     }
 
@@ -299,7 +299,7 @@ exports.getAllRestaurants = async (req, res, next) => {
   try {
     const restaurants = await Restaurant.find().populate("owner", "name email");
     res.json(restaurants);
-    console.log('all resturants:', restaurants);
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

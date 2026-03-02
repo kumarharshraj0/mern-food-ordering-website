@@ -48,9 +48,6 @@ const requireRole = (...roles) => {
     if (!req.user)
       return res.status(401).json({ message: "Unauthenticated" });
 
-     console.log("USER ROLES:", req.user.roles);
-    console.log("REQUIRED ROLES:", roles);
-
 
     // Check if user has at least one required role
     if (

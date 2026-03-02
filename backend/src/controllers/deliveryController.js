@@ -1,12 +1,11 @@
 const Order = require('../models/Order');
 const transporter = require('../config/nodemailer');
 const templates = require('../utils/emailTemplates');
-const fs = require('fs');
-const path = require('path');
+
 
 exports.listAssignedOrders = async (req, res, next) => {
   try {
-    console.log("LOGGED-IN DELIVERY BOY:", req.user);
+
 
     const orders = await Order.find({
       deliveryAssignedTo: req.user._id,
@@ -16,7 +15,6 @@ exports.listAssignedOrders = async (req, res, next) => {
       .sort({ createdAt: -1 })
       .populate('restaurant', 'name location address phone image');
 
-    console.log("FOUND ORDERS:", orders);
 
     res.json(orders);
   } catch (err) {
@@ -68,7 +66,8 @@ exports.updateStatus = async (req, res, next) => {
             subject: mail.subject,
             html: mail.html
           });
-          console.log(`OTP Email sent to ${orderWithUser.user.email}`);
+          // Email logic here
+
         }
       } catch (emailErr) {
         console.error("FAILED TO SEND OTP EMAIL:", emailErr);
