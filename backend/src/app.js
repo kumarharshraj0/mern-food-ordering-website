@@ -23,7 +23,7 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin:[ process.env.FRONTEND_URL , 'https://whimsical-horse-437514.netlify.app/api'],
+    origin:[ process.env.FRONTEND_URL , 'https://whimsical-horse-437514.netlify.app'],
     credentials: false
   })
 );
