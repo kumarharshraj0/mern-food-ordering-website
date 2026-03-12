@@ -25,7 +25,7 @@ app.use(
   cors({
     origin: [
       process.env.FRONTEND_URL,
-      "https://whimsical-horse-437514.netlify.app"
+      "https://benevolent-jelly-6e5d04.netlify.app"
     ],
     credentials: true
   })
