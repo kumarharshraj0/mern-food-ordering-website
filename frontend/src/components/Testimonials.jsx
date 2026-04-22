@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { Reveal } from "@/components/ui/Reveal";
 
 const testimonials = [
   {
@@ -85,7 +86,8 @@ export function TestimonialsSection() {
   }, [isPaused]);
 
   return (
-    <section className="bg-gradient-to-b from-white to-orange-50 py-20">
+    <Reveal>
+      <section className="bg-gradient-to-b from-white to-orange-50 py-20">
       <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12">
         {/* Header */}
         <div className="mb-12 text-center">
@@ -150,5 +152,6 @@ export function TestimonialsSection() {
         </p>
       </div>
     </section>
+    </Reveal>
   );
 }

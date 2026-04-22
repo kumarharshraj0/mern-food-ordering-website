@@ -196,7 +196,7 @@ exports.getRestaurants = async (req, res) => {
       filter["address.city"] = { $in: cityList };
     }
 
-    if (cuisine) filter.cuisineTypes = { $in: cuisine.split(",").map(c => c.trim()) };
+    if (cuisine) filter.cuisineTypes = { $in: cuisine.split(",").map(c => new RegExp(`^${c.trim()}$`, "i")) };
     if (rating) filter.rating = { $gte: Number(rating) };
 
     let sortOption = { popularity: -1, createdAt: -1 };

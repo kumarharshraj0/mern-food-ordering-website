@@ -11,8 +11,8 @@ import { useRestaurant } from "@/context/RestaurantContext";
 import { useMenu } from "@/context/MenuContext";
 import Skeleton from "@/components/ui/Skeleton";
 
-import AddMenu from "@/pages/owner/AddMenu";
-import UpdateMenu from "@/pages/owner/UpdateMenu";
+import AddMenu from "@/pages/Owner/AddMenu";
+import UpdateMenu from "@/pages/Owner/UpdateMenu";
 
 export default function OwnerRestaurants() {
   const navigate = useNavigate();

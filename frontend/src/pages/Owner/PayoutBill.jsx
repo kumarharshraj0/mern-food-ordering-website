@@ -151,7 +151,7 @@ export default function PayoutBill() {
                                             if (!payout.orders || payout.orders.length === 0) {
                                                 return (
                                                     <tr>
-                                                        <td colSpan="5" className="p-8 text-center text-gray-300 italic">No orders found in this payout.</td>
+                                                        <td colSpan="5" className="p-8 text-center text-gray-300">No orders found in this payout.</td>
                                                     </tr>
                                                 );
                                             }
@@ -162,7 +162,7 @@ export default function PayoutBill() {
                                                     </td>
                                                     <td className="p-4">
                                                         <p className="font-bold text-gray-800">{order?.user?.name || 'Customer'}</p>
-                                                        <p className="text-[10px] text-gray-400 italic">ID: {order?._id?.slice(-8) || 'N/A'}</p>
+                                                        <p className="text-[10px] text-gray-400">ID: {order?._id?.slice(-8) || 'N/A'}</p>
                                                     </td>
                                                     <td className="p-4 text-right font-medium text-gray-700">₹{(order?.subtotal || 0).toLocaleString()}</td>
                                                     <td className="p-4 text-right text-red-400">-{payout.commissionRate || 30}%</td>
@@ -178,7 +178,7 @@ export default function PayoutBill() {
                         {payout.adminNote && (
                             <div className="p-6 bg-red-50 rounded-2xl border border-red-100 mb-8">
                                 <h4 className="text-[10px] font-black text-red-800 uppercase tracking-widest mb-2">Admin Note</h4>
-                                <p className="text-sm text-red-700 italic">"{payout.adminNote}"</p>
+                                <p className="text-sm text-red-700">"{payout.adminNote}"</p>
                             </div>
                         )}
 

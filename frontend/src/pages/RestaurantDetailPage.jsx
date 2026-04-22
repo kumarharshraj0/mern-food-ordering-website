@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Star, Plus, MapPin, Search, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -22,6 +22,7 @@ export default function RestaurantDetailPage() {
   const { menu, loading: menuLoading, getMenu } = useMenu(); // From MenuContext
   const { checkReviewEligibility } = useOrder();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
@@ -122,6 +123,12 @@ export default function RestaurantDetailPage() {
 
   /* ================= ADD TO CART ================= */
   const handleAddToCart = async (item) => {
+    if (!user) {
+      toast.error("Please sign in to add items to cart");
+      navigate("/signin");
+      return;
+    }
+
     try {
       setAddingId(item._id);
       await addToCart({
@@ -148,7 +155,7 @@ export default function RestaurantDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-orange-50/30 pt-24 px-4 pb-16">
+    <div className="min-h-screen bg-transparent pt-24 px-4 pb-16">
 
       {/* ================= HEADER ================= */}
       <div className="max-w-7xl mx-auto">
@@ -163,7 +170,7 @@ export default function RestaurantDetailPage() {
             </div>
           </div>
         ) : restaurant && (
-          <div className="bg-white rounded-3xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] p-8 flex flex-col md:flex-row gap-8 border border-gray-100 backdrop-blur-sm relative overflow-hidden">
+          <div className="bg-white rounded-3xl shadow-sm p-8 flex flex-col md:flex-row gap-8 border border-stone-200/60 backdrop-blur-sm relative overflow-hidden">
             <div className="absolute top-0 right-0 p-8">
               <div className="flex flex-col items-end gap-2">
                 <div className="flex items-center gap-1.5 bg-orange-500 px-4 py-2 rounded-2xl text-white shadow-lg shadow-orange-500/20">
@@ -183,10 +190,10 @@ export default function RestaurantDetailPage() {
 
             <div className="flex-1 py-2">
               <div className="flex flex-wrap items-center gap-4">
-                <h1 className="text-4xl font-black text-gray-900 tracking-tight">
+                <h1 className="text-5xl font-outfit text-gray-900 tracking-tight">
                   {restaurant.name}
                 </h1>
-                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm ${restaurant.isOpen ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100'}`}>
+                <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${restaurant.isOpen ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-stone-50 text-stone-600 border-stone-200'}`}>
                   {restaurant.isOpen ? "Open Now" : "Currently Closed"}
                 </span>
               </div>
@@ -213,7 +220,7 @@ export default function RestaurantDetailPage() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 mt-8">
 
         {/* ================= FILTER ================= */}
-        <aside className="bg-white rounded-2xl shadow p-5 space-y-6">
+        <aside className="bg-white rounded-2xl shadow-sm border border-stone-200/60 p-5 space-y-6">
           {/* Search */}
           <div>
             <h3 className="font-semibold text-orange-900 mb-2">Search</h3>
@@ -318,7 +325,7 @@ export default function RestaurantDetailPage() {
             menu.map(item => (
               <div
                 key={item._id}
-                className="bg-white rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 hover:shadow-xl transition-all duration-500 overflow-hidden group"
+                className="bg-white rounded-2xl shadow-sm border border-stone-200/60 hover:shadow-md transition-all duration-500 overflow-hidden group"
               >
                 <div className="h-44 overflow-hidden relative">
                   <OptimizedImage
@@ -334,7 +341,7 @@ export default function RestaurantDetailPage() {
                 </div>
 
                 <div className="p-6">
-                  <h3 className="text-lg font-black text-gray-900 group-hover:text-orange-600 transition-colors">
+                  <h3 className="text-lg font-outfit font-bold text-gray-900 group-hover:text-orange-700 transition-colors">
                     {item.name}
                   </h3>
 
@@ -372,11 +379,11 @@ export default function RestaurantDetailPage() {
       </div>
 
       {/* ================= REVIEWS SECTION ================= */}
-      <div id="reviews" className="max-w-7xl mx-auto mt-16 bg-white rounded-3xl shadow-xl shadow-orange-900/5 overflow-hidden border border-orange-100/50">
+      <div id="reviews" className="max-w-7xl mx-auto mt-16 bg-white rounded-3xl shadow-sm overflow-hidden border border-stone-200/60">
         <div className="grid grid-cols-1 lg:grid-cols-3">
           {/* Left Column: Summary & Form */}
           <div className="p-8 lg:p-12 bg-orange-50/30 border-b lg:border-b-0 lg:border-r border-orange-100">
-            <h2 className="text-2xl font-black text-gray-900 mb-2 uppercase tracking-tight">
+            <h2 className="text-3xl font-outfit text-gray-900 mb-2 tracking-tight">
               Customer Reviews
             </h2>
             <div className="flex items-center gap-4 mb-8">

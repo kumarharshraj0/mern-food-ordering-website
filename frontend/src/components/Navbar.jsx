@@ -7,7 +7,15 @@ import {
   Menu,
   X,
   Package,
-  MapPin
+  MapPin,
+  Home,
+  Store,
+  History,
+  HelpCircle,
+  Settings,
+  LogOut,
+  Info,
+  MessageCircle
 } from "lucide-react";
 
 import Cart from "@/pages/Cart.jsx";
@@ -19,7 +27,7 @@ import { useCart } from "@/context/CartContext";
 export const Navbar = memo(function Navbar() {
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [isScrolledState, setIsScrolledState] = useState(false);
   const [cityName, setCityName] = useState("");
 
   const { user: authUser } = useAuth();
@@ -39,10 +47,12 @@ export const Navbar = memo(function Navbar() {
   if (shouldHideNavbar) return null;
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => setIsScrolledState(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const scrolled = isScrolledState || pathname !== "/";
 
   /* -----------------------------
      SHOW DEFAULT ADDRESS CITY
@@ -55,10 +65,11 @@ export const Navbar = memo(function Navbar() {
   }, [user]);
 
   const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/menu", label: "Menu" },
-    { href: "/restaurants", label: "Restaurants" },
-    { href: "/orders", label: "My Orders" }
+    { href: "/", label: "Home", icon: Home },
+    { href: "/restaurants", label: "Restaurants", icon: Store },
+    { href: "/about", label: "About Us", icon: Info },
+    { href: "/contact", label: "Contact Us", icon: MessageCircle },
+    ...(authUser ? [{ href: "/orders", label: "My Orders", icon: History }] : [])
   ];
 
   /* --------------------------------
@@ -116,8 +127,8 @@ export const Navbar = memo(function Navbar() {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-          ? "bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200/50"
-          : "bg-black/20 backdrop-blur-[2px] shadow-md"
+          ? "bg-[#faf9f6]/90 backdrop-blur-md border-b border-gray-200"
+          : "bg-transparent"
           }`}
       >
         <div className="max-w-7xl mx-auto px-4">
@@ -131,7 +142,7 @@ export const Navbar = memo(function Navbar() {
               <span
                 className={`text-2xl font-black tracking-tighter transition-colors ${scrolled ? "text-gray-900" : "text-white"
                   }`}
-                style={{ textShadow: scrolled ? "none" : "0 2px 4px rgba(0,0,0,0.5)" }}
+                style={{ textShadow: scrolled ? "none" : "none" }}
               >
                 FoodHub
               </span>
@@ -149,7 +160,7 @@ export const Navbar = memo(function Navbar() {
                       ? "text-gray-800 hover:text-orange-500"
                       : "text-white hover:text-orange-300"
                     }`}
-                  style={{ textShadow: scrolled ? "none" : "0 1px 3px rgba(0,0,0,0.4)" }}
+                  style={{ textShadow: scrolled ? "none" : "none" }}
                 >
                   {link.label}
                 </Link>
@@ -167,9 +178,9 @@ export const Navbar = memo(function Navbar() {
                     size="icon"
                     onClick={shareLocation}
                     aria-label="Detect and use current location"
-                    className={`border-orange-400/50 transition-all duration-300 ${scrolled
-                      ? "bg-orange-50 text-gray-800 border-orange-200"
-                      : "bg-white/10 text-white border-white/20 hover:bg-white/20 shadow-md"
+                    className={`border-transparent transition-all duration-300 ${scrolled
+                      ? "bg-orange-50 text-gray-800 border-orange-200 shadow-none border"
+                      : "bg-transparent text-white border-transparent hover:bg-white/10"
                       }`}
                   >
                     <MapPin className="h-5 w-5" />
@@ -179,7 +190,7 @@ export const Navbar = memo(function Navbar() {
                     <span
                       className={`text-sm font-bold transition-all duration-300 ${scrolled ? "text-gray-800" : "text-white"
                         }`}
-                      style={{ textShadow: scrolled ? "none" : "0 1px 3px rgba(0,0,0,0.5)" }}
+                      style={{ textShadow: scrolled ? "none" : "none" }}
                     >
                       {cityName}
                     </span>
@@ -203,23 +214,25 @@ export const Navbar = memo(function Navbar() {
               )}
 
               {/* CART */}
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setCartOpen(true)}
-                aria-label={`View shopping cart, ${itemCount} items`}
-                className={`relative border-orange-400/50 transition-all duration-300 ${scrolled
-                  ? "bg-orange-50 text-gray-800 border-orange-200"
-                  : "bg-white/10 text-white border-white/20 hover:bg-white/20 shadow-md"
-                  }`}
-              >
-                <ShoppingCart className="h-5 w-5" />
-                {itemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-orange-500 text-white text-xs flex items-center justify-center font-bold">
-                    {itemCount}
-                  </span>
-                )}
-              </Button>
+              {authUser && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCartOpen(true)}
+                  aria-label={`View shopping cart, ${itemCount} items`}
+                  className={`relative border-transparent transition-all duration-300 ${scrolled
+                    ? "bg-orange-50 text-gray-800 border-orange-200 shadow-none border"
+                    : "bg-transparent text-white border-transparent hover:bg-white/10"
+                    }`}
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  {itemCount > 0 && (
+                    <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-orange-500 text-white text-xs flex items-center justify-center font-bold">
+                      {itemCount}
+                    </span>
+                  )}
+                </Button>
+              )}
 
               {/* USER */}
               {authUser ? (
@@ -228,9 +241,9 @@ export const Navbar = memo(function Navbar() {
                   size="icon"
                   onClick={() => navigate("/account")}
                   aria-label="View my account"
-                  className={`hidden sm:flex border-orange-400/50 transition-all duration-300 ${scrolled
-                    ? "bg-orange-50 text-gray-800 border-orange-200"
-                    : "bg-white/10 text-white border-white/20 hover:bg-white/20 shadow-md"
+                  className={`hidden sm:flex border-transparent transition-all duration-300 ${scrolled
+                    ? "bg-orange-50 text-gray-800 border-orange-200 shadow-none border"
+                    : "bg-transparent text-white border-transparent hover:bg-white/10"
                     }`}
                 >
                   <User className="h-5 w-5" />
@@ -238,7 +251,7 @@ export const Navbar = memo(function Navbar() {
               ) : (
                 <Button
                   onClick={() => navigate("/signin")}
-                  className="hidden sm:flex bg-orange-500 text-white hover:bg-orange-600"
+                  className="hidden sm:flex bg-orange-500 text-white hover:bg-orange-600 rounded-full px-6"
                 >
                   Sign In
                 </Button>
@@ -248,9 +261,9 @@ export const Navbar = memo(function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className={`md:hidden transition-all duration-300 ${scrolled ? "text-gray-800 hover:bg-gray-100" : "text-white hover:bg-white/10"
+                className={`md:hidden transition-all duration-300 ${scrolled ? "text-gray-800 hover:bg-gray-100 shadow-none" : "text-white hover:bg-white/10 shadow-none"
                   }`}
-                style={{ filter: scrolled ? "none" : "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }}
+                style={{ filter: scrolled ? "none" : "none" }}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
                 aria-expanded={mobileMenuOpen}
@@ -261,59 +274,152 @@ export const Navbar = memo(function Navbar() {
             </div>
           </div>
         </div>
+      </nav>
+      
+      {/* MOBILE MENU OVERLAY - Moved outside <nav> for solid stacking context */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-[1000] flex justify-end">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-md animate-in fade-in duration-500"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          {/* Drawer */}
+          <div className="relative w-[300px] h-full bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-500 border-l border-gray-100">
+            {/* Header */}
+            <div className="p-6 border-b border-gray-50 flex items-center justify-between bg-white shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-2xl bg-orange-600 flex items-center justify-center font-bold text-white shadow-lg shadow-orange-500/20 transform -rotate-2">
+                  <span className="text-xl transform rotate-2">{authUser ? user?.name?.charAt(0) || "U" : "F"}</span>
+                </div>
+                <div>
+                  <h3 className="font-black text-gray-900 leading-tight tracking-tight text-lg">
+                    {authUser ? `Hi, ${user?.name || "User"}` : "FoodHub"}
+                  </h3>
+                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                    {authUser ? "Premium Member" : "Guest Account"}
+                  </p>
+                </div>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="rounded-full hover:bg-gray-50 h-10 w-10"
+              >
+                <X className="h-6 w-6 text-gray-400" />
+              </Button>
+            </div>
 
-        {/* MOBILE MENU BODY */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-white/90 backdrop-blur-lg border-b border-orange-100 animate-in slide-in-from-top duration-300">
-            <div className="px-4 pt-2 pb-6 space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`block text-lg font-medium py-3 px-2 ${pathname === link.href
-                    ? "text-orange-500"
-                    : "text-gray-800"
+            {/* Navigation Links */}
+            <div className="flex-1 overflow-y-auto pt-8 pb-4 px-4 space-y-1 bg-white">
+              <div className="px-4 mb-4">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[2px]">Main Navigation</p>
+              </div>
+              {navLinks.map((link) => {
+                const Icon = link.icon || Home;
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 group ${
+                      isActive 
+                      ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30" 
+                      : "text-gray-600 hover:bg-white hover:shadow-md hover:shadow-gray-200/50"
                     }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              <div className="pt-4 border-t border-orange-50 flex flex-col gap-4">
-                {authUser ? (
-                  <>
-                    <div className="flex items-center gap-3 py-3 px-2 cursor-pointer" onClick={shareLocation}>
-                      <MapPin className="h-5 w-5 text-orange-500" />
-                      <span className="font-medium text-gray-800">
-                        {cityName || "Detect Location"}
-                      </span>
+                  >
+                    <div className={`p-2 rounded-xl transition-colors ${
+                      isActive ? "bg-white/20" : "bg-gray-100 group-hover:bg-orange-50"
+                    }`}>
+                      <Icon className={`h-5 w-5 ${isActive ? "text-white" : "text-gray-500 group-hover:text-orange-500"}`} />
                     </div>
-                    <Link
-                      to="/account"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 py-3 px-2"
-                    >
-                      <User className="h-5 w-5 text-orange-500" />
-                      <span className="font-medium text-gray-800">My Account</span>
-                    </Link>
-                  </>
-                ) : (
-                  <Button
+                    <span className="font-bold text-[15px] tracking-tight">{link.label}</span>
+                  </Link>
+                )
+              })}
+
+              {/* Additional Sections for Authenticated Users */}
+              {authUser && (
+                <div className="pt-8 space-y-1">
+                  <div className="px-4 mb-4">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[2px]">Personal</p>
+                  </div>
+                  <Link
+                    to="/account"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-4 px-4 py-4 rounded-2xl text-gray-600 hover:bg-white hover:shadow-md transition-all duration-300 group"
+                  >
+                    <div className="p-2 rounded-xl bg-gray-100 group-hover:bg-orange-50">
+                      <Settings className="h-5 w-5 text-gray-500 group-hover:text-orange-500" />
+                    </div>
+                    <span className="font-bold text-[15px] tracking-tight">Account Settings</span>
+                  </Link>
+                  <div
+                    onClick={shareLocation}
+                    className="flex items-center gap-4 px-4 py-4 rounded-2xl text-gray-600 hover:bg-white hover:shadow-md transition-all duration-300 group cursor-pointer"
+                  >
+                    <div className="p-2 rounded-xl bg-gray-100 group-hover:bg-orange-50">
+                      <MapPin className="h-5 w-5 text-gray-500 group-hover:text-orange-500" />
+                    </div>
+                    <span className="font-bold text-[15px] tracking-tight truncate">
+                      {cityName || "Detect Location"}
+                    </span>
+                  </div>
+                  <div
                     onClick={() => {
                       setMobileMenuOpen(false);
+                      logout();
                       navigate("/signin");
                     }}
-                    className="w-full bg-orange-500 text-white"
+                    className="flex items-center gap-4 px-4 py-4 rounded-2xl text-red-500 hover:bg-red-50 hover:shadow-md transition-all duration-300 group cursor-pointer"
                   >
-                    Sign In
-                  </Button>
-                )}
+                    <div className="p-2 rounded-xl bg-red-100 group-hover:bg-red-200">
+                      <LogOut className="h-5 w-5 text-red-600" />
+                    </div>
+                    <span className="font-bold text-[15px] tracking-tight">Logout</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer Actions */}
+            <div className="p-6 border-t border-gray-100 bg-white/50 backdrop-blur-md shrink-0">
+              {!authUser ? (
+                <Button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate("/signin");
+                  }}
+                  className="w-full bg-orange-600 text-white font-bold py-7 rounded-2xl hover:bg-orange-700 transition-all shadow-xl shadow-orange-500/20 text-lg flex items-center justify-center gap-2 group"
+                >
+                  <span>Sign In</span>
+                  <LogOut className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <div className="p-4 bg-orange-50 rounded-2xl border border-orange-100">
+                    <div className="flex items-center gap-3 text-orange-700 mb-1">
+                      <HelpCircle className="h-4 w-4" />
+                      <span className="text-xs font-black uppercase tracking-wider">Need Help?</span>
+                    </div>
+                    <p className="text-[11px] text-orange-600 font-medium">Contact our 24/7 support for any ordering issues.</p>
+                  </div>
+                </div>
+              )}
+              
+              <div className="mt-6 flex items-center justify-between text-[9px] uppercase font-black tracking-[2px] text-gray-400 px-2">
+                 <span>FoodHub v1.2</span>
+                 <div className="flex gap-3">
+                    <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                    <span>Systems Live</span>
+                 </div>
               </div>
             </div>
           </div>
-        )}
-      </nav>
+        </div>
+      )}
 
       <Cart open={cartOpen} onClose={() => setCartOpen(false)} />
     </>

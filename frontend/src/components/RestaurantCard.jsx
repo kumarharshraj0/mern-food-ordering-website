@@ -29,7 +29,7 @@ export const RestaurantCard = React.memo(function RestaurantCard({ restaurant, o
     return (
         <div
             onClick={onClick}
-            className="group cursor-pointer overflow-hidden rounded-2xl bg-white shadow-[0_4px_20px_rgba(0,0,0,0.05)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] border border-gray-100"
+            className="group cursor-pointer overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-md border border-stone-200/60"
         >
             {/* Image Container */}
             <div className="relative h-56 overflow-hidden">
@@ -43,17 +43,17 @@ export const RestaurantCard = React.memo(function RestaurantCard({ restaurant, o
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 {featured && (
-                    <span className="absolute left-4 top-4 rounded-full bg-orange-500 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white shadow-lg z-10">
+                    <span className="absolute left-4 top-4 rounded-full bg-orange-700 px-3 py-1 text-xs font-semibold text-white shadow-sm z-10 font-inter">
                         Featured
                     </span>
                 )}
 
-                <span className={`absolute left-4 ${featured ? 'top-11' : 'top-4'} rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest shadow-lg z-10 ${restaurant.isOpen ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'}`}>
+                <span className={`absolute left-4 ${featured ? 'top-12' : 'top-4'} rounded-full px-3 py-1 text-xs font-semibold shadow-sm z-10 font-inter ${restaurant.isOpen ? 'bg-emerald-600 text-white' : 'bg-stone-500 text-white'}`}>
                     {restaurant.isOpen ? "Open" : "Closed"}
                 </span>
 
-                <div className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-white/95 backdrop-blur-sm px-3 py-1.5 text-xs font-black text-orange-600 shadow-xl z-10 border border-orange-100">
-                    <Star className="h-3.5 w-3.5 fill-orange-600" />
+                <div className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-white/95 backdrop-blur-sm px-3 py-1.5 text-xs font-bold text-gray-900 shadow-sm z-10 border border-stone-200">
+                    <Star className="h-3.5 w-3.5 fill-orange-500 text-orange-500" />
                     {rating.toFixed(1)}
                 </div>
             </div>
@@ -62,20 +62,20 @@ export const RestaurantCard = React.memo(function RestaurantCard({ restaurant, o
             <div className="p-6">
                 <div className="mb-3 flex items-start justify-between">
                     <div className="flex-1 min-w-0">
-                        <h3 className="text-xl font-black text-gray-900 line-clamp-1 group-hover:text-orange-600 transition-colors">
+                        <h3 className="text-xl font-outfit font-bold text-gray-900 line-clamp-1 group-hover:text-orange-700 transition-colors">
                             {name}
                         </h3>
-                        <p className="text-sm font-bold text-gray-400 mt-0.5 tracking-tight uppercase">
+                        <p className="text-sm font-medium text-gray-500 mt-1 tracking-normal font-inter">
                             {cuisines.slice(0, 2).join(" • ")}
                         </p>
                     </div>
                 </div>
 
                 {/* Rating & Distance */}
-                <div className="flex items-center gap-4 mb-4 text-xs font-bold text-gray-600">
-                    <div className="flex items-center gap-1.5 bg-orange-50 px-2 py-1 rounded-md text-orange-700">
+                <div className="flex items-center gap-4 mb-4 text-xs font-medium text-gray-500 font-inter">
+                    <div className="flex items-center gap-1.5 bg-orange-50/50 px-2 py-1 rounded border border-orange-200/50 text-orange-800">
                         <Clock className="h-3.5 w-3.5" />
-                        <span>{deliveryTime} MIN</span>
+                        <span>{deliveryTime} Min</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                         <MapPin className="h-3.5 w-3.5 text-gray-400" />
@@ -91,13 +91,13 @@ export const RestaurantCard = React.memo(function RestaurantCard({ restaurant, o
                     {tags.slice(0, 3).map((tag) => (
                         <span
                             key={tag}
-                            className="rounded-full bg-gray-50 px-2.5 py-1 text-[10px] font-black text-gray-500 border border-gray-100 uppercase tracking-tighter"
+                            className="rounded-full bg-stone-50 px-2.5 py-1 text-[11px] font-medium text-stone-600 border border-stone-200/50 capitalize font-inter"
                         >
                             {tag}
                         </span>
                     ))}
                     {reviews > 0 && (
-                        <span className="ml-auto text-[10px] font-black text-gray-400 self-center uppercase tracking-tighter">
+                        <span className="ml-auto text-xs font-medium text-gray-400 self-center font-inter">
                             {reviews} Reviews
                         </span>
                     )}

@@ -194,8 +194,8 @@ exports.getMenu = async (req, res) => {
     const filter = {};
 
     if (q) filter.name = { $regex: q, $options: "i" };
-    if (category) filter.category = { $in: category.split(",") };
-    if (cuisine) filter.cuisine = { $in: cuisine.split(",") };
+    if (category) filter.category = { $in: category.split(",").map(cat => new RegExp(`^${cat.trim()}$`, "i")) };
+    if (cuisine) filter.cuisine = { $in: cuisine.split(",").map(c => new RegExp(`^${c.trim()}$`, "i")) };
     if (isVeg !== undefined) filter.isVeg = isVeg === "true";
     if (restaurant) filter.restaurant = restaurant; // ✅ Apply filter
 

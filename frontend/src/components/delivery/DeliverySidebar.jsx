@@ -1,11 +1,12 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LayoutDashboard, ShoppingBag, User, LogOut } from "lucide-react";
 import { useDelivery } from "../../context/DeliveryContext";
 import { useAuth } from "../../context/AuthContext";
 
 const DeliverySidebar = ({ onClose }) => {
     const location = useLocation();
+    const navigate = useNavigate();
     const { logout } = useAuth();
     const { orders } = useDelivery();
 
@@ -50,7 +51,10 @@ const DeliverySidebar = ({ onClose }) => {
 
             <div className="p-4 border-t">
                 <button
-                    onClick={logout}
+                    onClick={() => {
+                        logout();
+                        navigate("/signin");
+                    }}
                     className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
                 >
                     <LogOut size={20} />

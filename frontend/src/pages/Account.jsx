@@ -266,7 +266,7 @@ export default function Account() {
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-gray-500 italic flex items-center gap-2">
+              <p className="text-sm text-gray-500 flex items-center gap-2">
                 <Navigation className="h-4 w-4 text-gray-300" /> No live location set.
               </p>
             )}
@@ -298,8 +298,11 @@ export default function Account() {
           </button>
 
           <button
-            onClick={logout}
-            className="px-4 py-2 bg-gray-200 rounded-lg"
+            onClick={() => {
+              logout();
+              navigate("/signin");
+            }}
+            className="px-4 py-2 bg-gray-200 rounded-lg text-gray-700 font-bold hover:bg-gray-300 transition-colors"
           >
             Logout
           </button>

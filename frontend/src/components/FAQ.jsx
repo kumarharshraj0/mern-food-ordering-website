@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
+import { Reveal } from "@/components/ui/Reveal";
 
 const faqs = [
     {
@@ -32,51 +33,53 @@ export function FAQ() {
     };
 
     return (
-        <section className="py-24 px-4 bg-white font-inter">
-            <div className="max-w-3xl mx-auto">
-                <div className="text-center mb-16">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-600 text-sm font-black mb-4 uppercase tracking-widest shadow-sm">
-                        <HelpCircle size={16} /> Help Center
+        <Reveal>
+            <section className="py-24 px-4 bg-white font-inter">
+                <div className="max-w-3xl mx-auto">
+                    <div className="text-center mb-16">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-600 text-sm font-black mb-4 uppercase tracking-widest shadow-sm">
+                            <HelpCircle size={16} /> Help Center
+                        </div>
+                        <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
+                            Common Questions
+                        </h2>
+                        <p className="text-lg text-gray-600">
+                            Everything you need to know about our service
+                        </p>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
-                        Common Questions
-                    </h2>
-                    <p className="text-lg text-gray-600">
-                        Everything you need to know about our service
-                    </p>
-                </div>
 
-                <div className="space-y-4">
-                    {faqs.map((faq, index) => (
-                        <div
-                            key={index}
-                            className={`border rounded-2xl transition-all duration-300 ${openIndex === index ? 'border-orange-500 bg-orange-50/30' : 'border-gray-100 bg-gray-50/50 hover:bg-gray-100'}`}
-                        >
-                            <button
-                                onClick={() => toggle(index)}
-                                className="w-full text-left px-6 py-5 flex items-center justify-between gap-4"
-                            >
-                                <span className={`text-lg font-bold transition-colors ${openIndex === index ? 'text-orange-600' : 'text-gray-900'}`}>
-                                    {faq.question}
-                                </span>
-                                {openIndex === index ? (
-                                    <ChevronUp className="text-orange-600 flex-shrink-0" />
-                                ) : (
-                                    <ChevronDown className="text-gray-400 flex-shrink-0" />
-                                )}
-                            </button>
-
+                    <div className="space-y-4">
+                        {faqs.map((faq, index) => (
                             <div
-                                className={`overflow-hidden transition-all duration-300 ease-in-out ${openIndex === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}
+                                key={index}
+                                className={`border rounded-2xl transition-all duration-300 ${openIndex === index ? 'border-orange-500 bg-orange-50/30' : 'border-gray-100 bg-gray-50/50 hover:bg-gray-100'}`}
                             >
-                                <div className="px-6 pb-6 text-gray-600 font-medium leading-relaxed">
-                                    {faq.answer}
+                                <button
+                                    onClick={() => toggle(index)}
+                                    className="w-full text-left px-6 py-5 flex items-center justify-between gap-4"
+                                >
+                                    <span className={`text-lg font-bold transition-colors ${openIndex === index ? 'text-orange-600' : 'text-gray-900'}`}>
+                                        {faq.question}
+                                    </span>
+                                    {openIndex === index ? (
+                                        <ChevronUp className="text-orange-600 flex-shrink-0" />
+                                    ) : (
+                                        <ChevronDown className="text-gray-400 flex-shrink-0" />
+                                    )}
+                                </button>
+
+                                <div
+                                    className={`overflow-hidden transition-all duration-300 ease-in-out ${openIndex === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}
+                                >
+                                    <div className="px-6 pb-6 text-gray-600 font-medium leading-relaxed">
+                                        {faq.answer}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </Reveal>
     );
 }

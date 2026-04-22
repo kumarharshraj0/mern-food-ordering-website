@@ -9,6 +9,8 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 
 // LAZY LOAD PAGES
 const Home = lazy(() => import("./pages/Home"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
 const OrdersPage = lazy(() => import("./pages/OrdersPage"));
 const MenuPage = lazy(() => import("./pages/Menu"));
 const RestaurantPage = lazy(() => import("./pages/Resturant"));
@@ -110,6 +112,8 @@ const App = () => {
               <Route path="/signup" element={<SignUp />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/account" element={<Account />} />
               <Route path="/restaurants" element={<RestaurantPage />} />
               <Route path="/restaurants/:id" element={<RestaurantDetailPage />} />

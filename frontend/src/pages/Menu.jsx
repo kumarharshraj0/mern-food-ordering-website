@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import { Plus, X, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Plus, X, Star, SlidersHorizontal } from "lucide-react";
+import SideSheet from "@/components/ui/SideSheet";
 import { toast } from "react-hot-toast";
 import { useMenu } from "@/context/MenuContext";
 import { useCart } from "@/context/CartContext";
 import { useOrder } from "@/context/OrderContext";
 import MenuSkeleton from "@/components/MenuSkeleton.jsx";
 import ReviewList from "@/components/reviews/ReviewList";
-import ReviewForm from "@/components/reviews/ReviewForm";
+import { ReviewForm } from "@/components/reviews/ReviewForm";
+import { Reveal } from "@/components/ui/Reveal";
+import { useAuth } from "@/context/AuthContext";
 
 const cuisinesList = [
   "Italian",
@@ -21,6 +25,8 @@ export default function MenuPage() {
   const { menu, loading, getMenu, getMenuReviews, createReview } = useMenu();
   const { addToCart } = useCart();
   const { checkReviewEligibility } = useOrder();
+  const { user: authUser } = useAuth();
+  const navigate = useNavigate();
 
   const [selectedCuisines, setSelectedCuisines] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -30,6 +36,7 @@ export default function MenuPage() {
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [isEligible, setIsEligible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   /* ---------------- FETCH REVIEWS & ELIGIBILITY ---------------- */
   useEffect(() => {
@@ -94,6 +101,11 @@ export default function MenuPage() {
 
   /* ---------------- ADD TO CART ---------------- */
   const handleAddToCart = async (item) => {
+    if (!authUser) {
+      toast.error("Please sign in to add items to cart");
+      navigate("/signin");
+      return;
+    }
     const toastId = toast.loading("Adding to cart...");
 
     try {
@@ -132,71 +144,91 @@ export default function MenuPage() {
 
 
   return (
-    <div className="min-h-screen bg-orange-50 pt-24 pb-16 px-4 md:px-8 lg:px-12">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+    <div className="min-h-screen bg-transparent pt-24 pb-16 px-4 md:px-8 lg:px-12">
+      <Reveal>
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
 
-        {/* ================= FILTER ================= */}
-        <aside className="lg:w-64 bg-white p-5 rounded-xl shadow sticky top-24 h-max">
-          <h2 className="text-xl font-bold mb-4 text-orange-600">
-            Filter by Cuisine
-          </h2>
+          {/* ================= FILTER (Desktop) ================= */}
+          <aside className="hidden lg:block lg:w-64 bg-transparent border-r border-stone-200 p-5 sticky top-24 h-max z-20">
+            <MenuFilterContent
+              cuisinesList={cuisinesList}
+              selectedCuisines={selectedCuisines}
+              toggleCuisine={toggleCuisine}
+            />
+          </aside>
 
-          <ul className="flex flex-col gap-3">
-            {cuisinesList.map((cuisine) => (
-              <li key={cuisine}>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={selectedCuisines.includes(cuisine)}
-                    onChange={() => toggleCuisine(cuisine)}
-                    className="accent-orange-600 w-4 h-4"
-                  />
-                  <span className="font-medium text-gray-700">
-                    {cuisine}
-                  </span>
-                </label>
-              </li>
-            ))}
-          </ul>
-        </aside>
+          {/* ================= FILTER (Mobile) ================= */}
+          <SideSheet
+            open={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            title="Filter Cuisine"
+          >
+            <div className="bg-white">
+              <MenuFilterContent
+                cuisinesList={cuisinesList}
+                selectedCuisines={selectedCuisines}
+                toggleCuisine={toggleCuisine}
+              />
+            </div>
+          </SideSheet>
 
-        {/* ================= MENU GRID ================= */}
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading &&
-            Array.from({ length: 6 }).map((_, i) => (
-              <MenuSkeleton key={i} />
-            ))}
+          {/* ================= MENU CONTENT ================= */}
+          <div className="flex-1 flex flex-col gap-6">
 
-          {!loading &&
-            menu.map((item) => (
-              <div
-                key={item._id}
-                className="bg-white rounded-2xl overflow-hidden shadow hover:shadow-lg transition cursor-pointer"
-                onClick={() => setSelectedItem(item)}
+            {/* Mobile Filter Toggle */}
+            <div className="lg:hidden">
+              <button
+                onClick={() => setIsFilterOpen(true)}
+                className="flex items-center gap-2 px-6 py-2 bg-white border border-orange-200 rounded-xl text-orange-600 font-bold hover:bg-orange-50 transition-all shadow-sm group"
               >
-                <img
-                  src={item.images?.[0]?.url?.startsWith("http")
-                    ? `${item.images[0].url}?auto=format&fit=crop&w=500&q=75`
-                    : item.images?.[0]?.url || "/placeholder.png"}
-                  alt={item.name}
-                  className="w-full h-48 object-cover"
-                  loading="lazy"
-                />
-                <div className="p-5">
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-lg font-semibold">{item.name}</h3>
-                    <span className="text-orange-600 font-bold">
-                      ₹{item.price}
-                    </span>
+                <SlidersHorizontal className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+                <span>Filter Cuisine</span>
+                {selectedCuisines.length > 0 && (
+                  <span className="flex items-center justify-center w-5 h-5 bg-orange-600 text-white text-[10px] rounded-full">
+                    {selectedCuisines.length}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {loading &&
+                Array.from({ length: 6 }).map((_, i) => (
+                  <MenuSkeleton key={i} />
+                ))}
+
+              {!loading &&
+                menu.map((item) => (
+                  <div
+                    key={item._id}
+                    className="bg-white rounded-2xl overflow-hidden shadow-sm border border-stone-200/60 hover:-translate-y-1 hover:shadow-md transition cursor-pointer group"
+                    onClick={() => setSelectedItem(item)}
+                  >
+                    <img
+                      src={item.images?.[0]?.url?.startsWith("http")
+                        ? `${item.images[0].url}?auto=format&fit=crop&w=500&q=75`
+                        : item.images?.[0]?.url || "/placeholder.png"}
+                      alt={item.name}
+                      className="w-full h-48 object-cover"
+                      loading="lazy"
+                    />
+                    <div className="p-5">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="text-lg font-outfit font-bold font-gray-900 group-hover:text-orange-700 transition-colors leading-tight pr-2">{item.name}</h3>
+                        <span className="text-orange-700 font-semibold whitespace-nowrap">
+                          ₹{item.price}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        {item.cuisine} • {item.category}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-600">
-                    {item.cuisine} • {item.category}
-                  </p>
-                </div>
-              </div>
-            ))}
+                ))}
+            </div>
+          </div>
         </div>
-      </div>
+      </Reveal>
 
       {/* ================= MODAL ================= */}
       {selectedItem && (
@@ -226,10 +258,10 @@ export default function MenuPage() {
               <div className="p-8 flex-1 overflow-y-auto custom-scrollbar">
                 <div className="mb-8">
                   <div className="flex justify-between items-start mb-2">
-                    <h2 className="text-3xl font-black text-gray-900 leading-tight">
+                    <h2 className="text-4xl font-outfit text-gray-900 leading-tight">
                       {selectedItem.name}
                     </h2>
-                    <div className="flex items-center gap-1 bg-orange-50 px-3 py-1 rounded-full">
+                    <div className="flex items-center gap-1 bg-orange-50 px-3 py-1 rounded border border-orange-200/50">
                       <Star size={16} className="fill-orange-500 text-orange-500" />
                       <span className="font-black text-orange-600">
                         {selectedItem.rating?.toFixed(1) || "5.0"}
@@ -237,7 +269,7 @@ export default function MenuPage() {
                     </div>
                   </div>
 
-                  <p className="text-xs uppercase tracking-widest font-black text-orange-600/60 mb-4">
+                  <p className="text-xs uppercase tracking-normal font-semibold text-gray-500 mb-4 font-inter">
                     {selectedItem.cuisine} • {selectedItem.category}
                   </p>
 
@@ -246,13 +278,13 @@ export default function MenuPage() {
                   </p>
 
                   <div className="flex items-center justify-between mb-8">
-                    <p className="text-3xl font-black text-gray-900 tracking-tighter">
+                    <p className="text-3xl font-semibold text-orange-700 tracking-tight">
                       ₹{selectedItem.price}
                     </p>
                     <button
                       disabled={adding}
                       onClick={() => handleAddToCart(selectedItem)}
-                      className="flex items-center justify-center gap-2 bg-gray-900 border-2 border-gray-900 hover:bg-transparent hover:text-gray-900 text-white font-bold px-8 py-3 rounded-xl transition-all active:scale-95 disabled:opacity-50"
+                      className="flex items-center justify-center gap-2 bg-stone-900 border border-stone-900 hover:bg-stone-800 text-white font-bold px-8 py-3 rounded-xl transition-all active:scale-95 disabled:opacity-50"
                     >
                       <Plus className="h-5 w-5" />
                       {adding ? "Adding..." : "Add to Cart"}
@@ -262,13 +294,13 @@ export default function MenuPage() {
 
                 {/* Reviews Section in Modal */}
                 <div className="border-t border-gray-50 pt-8 mt-8">
-                  <h3 className="text-xl font-black text-gray-900 mb-6 uppercase tracking-tight">
+                  <h3 className="text-2xl font-outfit text-gray-900 mb-6 tracking-tight">
                     Reviews ({reviews.length})
                   </h3>
 
                   {isEligible && (
                     <div className="mb-10 bg-orange-50/50 p-6 rounded-2xl border border-orange-100">
-                      <h4 className="text-xs font-black text-orange-600 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <h4 className="text-xs font-semibold text-orange-700 tracking-wide mb-4 flex items-center gap-2">
                         <Star size={14} /> Write your review
                       </h4>
                       <ReviewForm onSubmit={handleReviewSubmit} loading={isSubmitting} />
@@ -283,6 +315,37 @@ export default function MenuPage() {
         </div>
       )}
     </div>
+  );
+}
+
+/* -------------------------------
+   Helper: Menu Filter Content
+-------------------------------- */
+function MenuFilterContent({ cuisinesList, selectedCuisines, toggleCuisine }) {
+  return (
+    <>
+      <h2 className="text-xl font-outfit mb-4 text-gray-900 border-b border-stone-200/50 pb-2">
+        Filter by Cuisine
+      </h2>
+
+      <ul className="flex flex-col gap-3">
+        {cuisinesList.map((cuisine) => (
+          <li key={cuisine}>
+            <label className="flex items-center gap-2 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={selectedCuisines.includes(cuisine)}
+                onChange={() => toggleCuisine(cuisine)}
+                className="accent-orange-600 w-4 h-4 cursor-pointer"
+              />
+              <span className={`font-medium transition-colors ${selectedCuisines.includes(cuisine) ? "text-orange-700" : "text-gray-700 group-hover:text-orange-500"}`}>
+                {cuisine}
+              </span>
+            </label>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 

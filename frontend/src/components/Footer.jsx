@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-white border-t border-gray-100 pt-16 pb-8 px-4 md:px-8 lg:px-12">
+    <footer className="bg-transparent border-t border-gray-200/60 pt-16 pb-8 px-4 md:px-8 lg:px-12 mt-12">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
@@ -12,7 +12,7 @@ const Footer = () => {
               <div className="h-8 w-8 rounded-full bg-orange-600 flex items-center justify-center">
                 <span className="text-white font-bold text-sm">F</span>
               </div>
-              <span className="text-xl font-black tracking-tighter text-gray-900">FoodHub</span>
+              <span className="text-2xl font-black tracking-tighter text-gray-900 font-outfit">FoodHub</span>
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">
               Delivering happiness one meal at a time. Experience artisanal cuisine from your favorite local chefs.
